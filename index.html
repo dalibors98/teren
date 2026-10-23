@@ -17,12 +17,13 @@
 :root{
   --bg:#f3f5f4; --card:#ffffff; --text:#14181a; --muted:#6b7378; --line:#e3e7e5;
   --acc:#1d8a55; --acc2:#21a366; --accbg:#e4f4ec; --danger:#d93f3f; --warn:#b86e00; --warnbg:#fff1d6;
+  --blue:#2563c9; --bluebg:#e6efff;
   --shadow:0 1px 2px rgba(0,0,0,.06),0 4px 14px rgba(0,0,0,.05);
   --safe-b:env(safe-area-inset-bottom,0px); --safe-t:env(safe-area-inset-top,0px);
 }
 @media (prefers-color-scheme:dark){
   :root{--bg:#111315; --card:#1c1f22; --text:#eef1f2; --muted:#9aa3a8; --line:#2c3135;
-        --accbg:#173326; --warnbg:#3a2e14; --warn:#f0b04a; --shadow:none;}
+        --accbg:#173326; --warnbg:#3a2e14; --warn:#f0b04a; --bluebg:#1b2a44; --blue:#8db4ff; --shadow:none;}
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-style:normal}
 html,body{margin:0;background:var(--bg);color:var(--text);
@@ -96,7 +97,12 @@ textarea.in{min-height:84px;resize:vertical}
   display:flex;align-items:center;gap:12px;cursor:pointer;border:1px solid transparent}
 .card:active{border-color:var(--acc2)}
 .card .t{flex:1;min-width:0}
-.card .n{font-weight:600;font-size:17px}
+.nrow{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.card .n{font-weight:600;font-size:17px;min-width:0}
+.ps{flex:0 1 auto;max-width:48%;text-align:right;line-height:1.2}
+.ps small{display:block;font-size:11px;color:var(--muted);white-space:nowrap}
+.ps b{display:inline-block;margin-top:2px;font-size:13px;font-weight:600;color:var(--blue);background:var(--bluebg);
+  border-radius:8px;padding:2px 8px;word-break:break-word}
 .card .a{color:var(--text);opacity:.8;font-size:15px;margin-top:2px}
 .card .m{color:var(--muted);font-size:13px;margin-top:1px}
 .badge{display:inline-block;border-radius:999px;padding:3px 10px;font-size:13px;font-weight:600;
@@ -116,10 +122,14 @@ textarea.in{min-height:84px;resize:vertical}
 .person .n{font-size:21px;font-weight:700}
 .person .a{margin-top:4px}
 .person .m{color:var(--muted);font-size:14px}
+.person .ps b{font-size:14px}
 .extra{margin-top:10px;font-size:14px;color:var(--muted)}
 .extra div{padding:3px 0}
 .tel{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:10px;background:var(--accbg);
   color:var(--acc);font-weight:600;text-decoration:none;font-size:16px}
+.tel.off{background:var(--bg);color:var(--text)}
+.phones{margin-top:12px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.phones .pl{font-size:14px;color:var(--muted);font-weight:600}
 .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}
 .maplink{color:var(--acc);font-weight:600;text-decoration:none}
 .cur{margin-top:10px;font-size:14px;color:var(--muted)}
@@ -140,7 +150,7 @@ textarea.in{min-height:84px;resize:vertical}
 .locked{opacity:.45;pointer-events:none}
 .hint{color:var(--muted);font-size:13px;margin-top:8px}
 .prev{margin-top:6px;font-size:14px;color:var(--muted);background:var(--bg);border-radius:10px;padding:8px 10px;
-  white-space:pre-wrap;word-break:break-word}
+  word-break:break-word}
 .prev b{color:var(--acc);font-weight:600}
 .bar{position:fixed;left:0;right:0;bottom:0;padding:12px 14px calc(12px + var(--safe-b));
   background:linear-gradient(to top,var(--bg) 70%,transparent);z-index:21}
@@ -247,7 +257,7 @@ textarea.in{min-height:84px;resize:vertical}
         </div>
         <div class="q">
           <div class="lbl">Молба / захтев грађанина</div>
-          <textarea class="in" id="molba" placeholder="Може латиницом – сачуваће се ћирилицом…"></textarea>
+          <textarea class="in" id="molba" placeholder="Упиши ако има неку молбу – може латиницом…"></textarea>
           <div class="prev" id="molbaPrev" hidden></div>
         </div>
       </div>
@@ -296,27 +306,13 @@ const SINGLE = { a:"а",b:"б",c:"ц",č:"ч",ć:"ћ",d:"д",đ:"ђ",e:"е",f:"�
   m:"м",n:"н",o:"о",p:"п",r:"р",s:"с",š:"ш",t:"т",u:"у",v:"в",z:"з",ž:"ж",
   A:"А",B:"Б",C:"Ц",Č:"Ч",Ć:"Ћ",D:"Д",Đ:"Ђ",E:"Е",F:"Ф",G:"Г",H:"Х",I:"И",J:"Ј",K:"К",L:"Л",
   M:"М",N:"Н",O:"О",P:"П",R:"Р",S:"С",Š:"Ш",T:"Т",U:"У",V:"В",Z:"З",Ž:"Ж" };
-const singles = s => s.replace(/[A-Za-zČčĆćĐđŠšŽž]/g, ch => SINGLE[ch] || ch);
-function cyr(s) {                          // за приказ имена, адреса, места
+function cyr(s) {
   if (s == null) return "";
-  return singles(String(s).replace(/Lj|LJ|lj|lJ|Nj|NJ|nj|nJ|Dž|DŽ|dž|dŽ/g, m => DIGRAPH[m]));
-}
-/* За текст који куца теренац: исто, плус
-   – „dj” -> „ђ” (кад телефон нема слово đ),
-   – изузеци где „dž” није џ (nadživeti, podžupan, odžaliti…),
-   – мејл адресе и линкови остају латиницом. */
-function cyrWord(w) {
-  if (/[@\/]|^www\.|\.(com|rs|net|org)\b/i.test(w)) return w;
-  w = w.replace(/^(pred|nad|pod|od)(ž)/i, (m, a, b) => singles(a) + singles(b));
-  w = w.replace(/Dj|DJ|dj|dJ/g, m => (m[0] === "D" ? "Ђ" : "ђ"));
-  return cyr(w);
-}
-function cyrText(s) {
-  if (s == null) return "";
-  return String(s).split(/(\s+)/).map(p => (/\s/.test(p) || !p) ? p : cyrWord(p)).join("");
+  return String(s)
+    .replace(/Lj|LJ|lj|lJ|Nj|NJ|nj|nJ|Dž|DŽ|dž|dŽ/g, m => DIGRAPH[m])
+    .replace(/[A-Za-zČčĆćĐđŠšŽž]/g, ch => SINGLE[ch] || ch);
 }
 const hasLatin = s => /[A-Za-zČčĆćĐđŠšŽž]/.test(s || "");
-
 const coll = new Intl.Collator("sr-Cyrl", { numeric: true, sensitivity: "base" });
 function cmp(a, b) {                       // празно увек на крај
   a = a == null ? "" : String(a); b = b == null ? "" : String(b);
@@ -351,13 +347,35 @@ function phoneHref(key, val) {
   return null;
 }
 
+/* Мобилни бројеви из колона које је администратор подесио – један испод другог */
+function phonesOf(t) {
+  const arr = Array.isArray(t.telefoni) ? t.telefoni : [];
+  return arr.map(x => String(x == null ? "" : x).trim()).filter(Boolean);
+}
+function phonesHtml(t) {
+  const list = phonesOf(t);
+  if (!list.length) return "";
+  return `<div class="phones"><div class="pl">Мобилни:</div>` + list.map(n => {
+    const h = phoneHref("tel", n);
+    return h ? `<a class="tel" href="tel:${esc(h)}">📞 ${esc(n)}</a>` : `<span class="tel off">${esc(n)}</span>`;
+  }).join("") + `</div>`;
+}
+
+/* Претходни статус (колона из Excel-а) – десно, поред имена */
+const prevStatus = t => String(t.prethodni_status == null ? "" : t.prethodni_status).trim();
+function prevStatusHtml(t) {
+  const p = prevStatus(t);
+  if (!p) return "";
+  return `<div class="ps"><small>Претходни статус:</small><b>${esc(cyr(p))}</b></div>`;
+}
+
 let session = load(K.session);
 let profile = load(K.profile);
 let tasks = load(K.tasks) || [];
 let done = load(K.done) || [];
 let queue = (load(K.queue) || []).map(q => Object.assign({ kind: "insert" }, q));
 let sortBy = SORTS[load(K.sort)] ? load(K.sort) : "adresa";
-let view = "open";                       // "open" = адресе, "done" = попуњено
+let view = "open";
 let current = null;
 let editMode = false;
 let form = {};
@@ -387,8 +405,8 @@ const SR = [
   ["user_banned", "Овај налог је онемогућен."],
   ["user is banned", "Овај налог је онемогућен."],
   ["email not confirmed", "Налог није активиран. Јави се администратору."],
-  ["does not exist", "База није ажурирана – администратор треба да покрене најновији SQL (teren_baza_4.sql)."],
-  ["could not find", "База није ажурирана – администратор треба да покрене најновији SQL (teren_baza_4.sql)."],
+  ["does not exist", "База није ажурирана – администратор треба да покрене најновији SQL (teren_baza_6.sql)."],
+  ["could not find", "База није ажурирана – администратор треба да покрене најновији SQL (teren_baza_6.sql)."],
   ["violates check constraint", "База није ажурирана – администратор треба да покрене најновији SQL."]
 ];
 function srMsg(m) {
@@ -417,8 +435,10 @@ async function http(method, path, opt) {
   let j = null;
   try { j = txt ? JSON.parse(txt) : null; } catch (e) { j = null; }
   if (!r.ok) {
-    const msg = j ? [j.message, j.msg, j.error_description, j.error_code, j.error].filter(Boolean).join(" ") : txt;
-    throw new ApiError(r.status, j && (j.code || j.error_code), srMsg(msg) || ("HTTP " + r.status));
+    const raw = j ? [j.message, j.msg, j.error_description, j.error_code, j.error].filter(Boolean).join(" ") : txt;
+    const e = new ApiError(r.status, j && (j.code || j.error_code), srMsg(raw) || ("HTTP " + r.status));
+    e.raw = raw || "";
+    throw e;
   }
   return j;
 }
@@ -495,20 +515,39 @@ function logout(msg) {
 }
 
 /* ============================ ПОДАЦИ ============================ */
-const TASK_COLS = "id,ime,prezime,adresa,mesto,sprat,stan,extra";
+/* Колоне – ако база још нема нове колоне (телефони, претходни статус), апликација ради и без њих */
+const BASE_COLS = "id,ime,prezime,adresa,mesto,sprat,stan,extra";
+const OPT_COLS = ["telefoni", "prethodni_status"];
+let missingCols = new Set();
+const taskCols = () => [BASE_COLS].concat(OPT_COLS.filter(c => !missingCols.has(c))).join(",");
+
+async function withCols(fn) {
+  for (let i = 0; i <= OPT_COLS.length; i++) {
+    try {
+      return await fn(taskCols());
+    } catch (e) {
+      if (!(e instanceof ApiError)) throw e;
+      const txt = (e.raw || "") + " " + e.message;
+      const bad = OPT_COLS.find(c => !missingCols.has(c) && txt.includes(c));
+      if (!bad) throw e;
+      missingCols.add(bad);
+    }
+  }
+  return fn(taskCols());
+}
 
 async function loadTasks() {
-  const rows = await http("GET", "/rest/v1/tasks", {
-    params: { select: TASK_COLS + ",assigned_at", status: "eq.dodeljeno", limit: "5000" } });
+  const rows = await withCols(cols => http("GET", "/rest/v1/tasks", {
+    params: { select: cols + ",assigned_at", status: "eq.dodeljeno", limit: "5000" } }));
   tasks = rows || [];
   save(K.tasks, tasks);
 }
 
 async function loadDone() {
   try {
-    const rows = await http("GET", "/rest/v1/tasks", {
-      params: { select: TASK_COLS + ",completed_at,surveys(id,ishod,pristanak,podrzava,izlazi,molba,napomena,created_at,updated_at)",
-                status: "eq.zavrseno", order: "completed_at.desc.nullslast", limit: "1000" } });
+    const rows = await withCols(cols => http("GET", "/rest/v1/tasks", {
+      params: { select: cols + ",completed_at,surveys(id,ishod,pristanak,podrzava,izlazi,molba,napomena,created_at,updated_at)",
+                status: "eq.zavrseno", order: "completed_at.desc.nullslast", limit: "1000" } }));
     done = (rows || []).map(t => {
       const s = Array.isArray(t.surveys) ? (t.surveys[0] || null) : (t.surveys || null);
       const o = Object.assign({}, t, { survey: s });
@@ -519,7 +558,7 @@ async function loadDone() {
     save(K.done, done);
   } catch (e) {
     if (e instanceof NetError || e.status === 401) throw e;
-    doneErr = e.message;                   // нпр. база још није ажурирана – адресе и даље раде
+    doneErr = e.message;
   }
 }
 
@@ -558,7 +597,7 @@ function dropFromQueue(qid) {
   const item = queue.find(q => q.qid === qid);
   queue = queue.filter(q => q.qid !== qid);
   save(K.queue, queue);
-  if (item && item.kind !== "update") {   // адреса је обрађена – склони је са листе одмах
+  if (item && item.kind !== "update") {
     tasks = tasks.filter(t => t.id !== item.payload.task_id);
     save(K.tasks, tasks);
   }
@@ -613,7 +652,7 @@ function fromExtra(t, rx) {
 const sprat = t => (t.sprat != null && String(t.sprat).trim() !== "") ? String(t.sprat).trim() : fromExtra(t, EXTRA_SPRAT);
 const stan  = t => (t.stan  != null && String(t.stan).trim()  !== "") ? String(t.stan).trim()  : fromExtra(t, EXTRA_STAN);
 const fullName = t => cyr([t.ime, t.prezime].filter(Boolean).join(" ")) || "(без имена)";
-function addrLine(t) {                     // „Улица 10, спрат 4, стан 20”
+function addrLine(t) {
   const parts = [];
   if (t.adresa) parts.push(cyr(t.adresa));
   if (sprat(t)) parts.push("спрат " + cyr(sprat(t)));
@@ -663,18 +702,17 @@ function matches(t) {
   const q = cyr($("#search").value.trim()).toLowerCase();
   if (!q) return true;
   const extra = Object.values(extraOf(t)).join(" ");
-  return cyr([t.ime, t.prezime, t.adresa, t.mesto, sprat(t), stan(t), extra].join(" ")).toLowerCase().includes(q);
+  return cyr([t.ime, t.prezime, t.adresa, t.mesto, sprat(t), stan(t), prevStatus(t), extra].join(" "))
+    .toLowerCase().includes(q);
 }
 
 function pendingInsertIds() {
   return new Set(queue.filter(q => q.kind !== "update").map(q => q.payload.task_id));
 }
-
 function openList() {
   const p = pendingInsertIds();
   return tasks.filter(t => !p.has(t.id));
 }
-
 function doneList() {
   const pend = queue.filter(q => q.kind !== "update").map(q => {
     const t = tasks.find(x => x.id === q.payload.task_id);
@@ -696,7 +734,10 @@ function cardHtml(t, isDone) {
   return `
     <div class="card" data-id="${esc(t.id)}" data-pending="${t.pending ? 1 : ""}" role="button" tabindex="0">
       <div class="t">
-        <div class="n">${esc(fullName(t))}</div>
+        <div class="nrow">
+          <div class="n">${esc(fullName(t))}</div>
+          ${prevStatusHtml(t)}
+        </div>
         <div class="a">${esc(addrLine(t))}</div>
         ${meta ? `<div class="m">${esc(meta)}</div>` : ""}
         ${badge}
@@ -772,11 +813,14 @@ function setSortMenu(open) {
 
 /* ============================ АНКЕТА ============================ */
 function updPrev(id) {                     // приказ како ће текст бити сачуван (ћирилицом)
-  const v = $("#" + id).value;
+  const v = $("#" + id).value.trim();
   const p = $("#" + id + "Prev");
-  if (!v.trim() || !hasLatin(v)) { p.hidden = true; return; }
-  p.innerHTML = `<b>Чува се ћирилицом:</b> ${esc(cyrText(v))}`;
-  p.hidden = false;
+  if (v && hasLatin(v)) {
+    p.innerHTML = "Биће сачувано: <b>" + esc(cyr(v)) + "</b>";
+    p.hidden = false;
+  } else {
+    p.hidden = true;
+  }
 }
 
 function openForm(id, edit) {
@@ -812,9 +856,13 @@ function openForm(id, edit) {
          ${fmtTime(s.updated_at || current.completed_at) ? " · " + esc(fmtTime(s.updated_at || current.completed_at)) : ""}</div>`
     : "";
   $("#person").innerHTML = `
-    <div class="n">${esc(fullName(current))}</div>
+    <div class="nrow">
+      <div class="n">${esc(fullName(current))}</div>
+      ${prevStatusHtml(current)}
+    </div>
     <div class="a">${esc(addrLine(current))}</div>
     ${current.mesto ? `<div class="m">${esc(cyr(current.mesto))}</div>` : ""}
+    ${phonesHtml(current)}
     ${extraHtml ? `<div class="extra">${extraHtml}</div>` : ""}
     ${curHtml}
     <div class="links">
@@ -858,15 +906,15 @@ async function submitForm() {
     pristanak: anket,
     podrzava: anket ? form.podrzava : null,
     izlazi: anket ? form.izlazi : null,
-    molba: anket ? cyrText($("#molba").value.trim()) : "",       // у базу иде ћирилица
-    napomena: cyrText($("#napomena").value.trim())
+    molba: anket ? cyr($("#molba").value.trim()) : "",
+    napomena: cyr($("#napomena").value.trim())
   };
   const label = fullName(current);
   const wasEdit = editMode;
 
   if (wasEdit) {
     const sid = current.survey.id;
-    queue = queue.filter(q => !(q.kind === "update" && q.sid === sid));   // само последња измена
+    queue = queue.filter(q => !(q.kind === "update" && q.sid === sid));
     queue.push({ qid: uid(), kind: "update", sid, label, payload: answers, at: Date.now() });
     current.survey = Object.assign({}, current.survey, answers, { updated_at: new Date().toISOString() });
     save(K.done, done);
