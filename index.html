@@ -139,6 +139,9 @@ textarea.in{min-height:84px;resize:vertical}
 .q .lbl{font-weight:600;margin-bottom:8px}
 .locked{opacity:.45;pointer-events:none}
 .hint{color:var(--muted);font-size:13px;margin-top:8px}
+.prev{margin-top:6px;font-size:14px;color:var(--muted);background:var(--bg);border-radius:10px;padding:8px 10px;
+  white-space:pre-wrap;word-break:break-word}
+.prev b{color:var(--acc);font-weight:600}
 .bar{position:fixed;left:0;right:0;bottom:0;padding:12px 14px calc(12px + var(--safe-b));
   background:linear-gradient(to top,var(--bg) 70%,transparent);z-index:21}
 .bar .btn{margin:0;font-size:17px}
@@ -244,14 +247,16 @@ textarea.in{min-height:84px;resize:vertical}
         </div>
         <div class="q">
           <div class="lbl">Молба / захтев грађанина</div>
-          <textarea class="in" id="molba" placeholder="Упиши ако има неку молбу…"></textarea>
+          <textarea class="in" id="molba" placeholder="Може латиницом – сачуваће се ћирилицом…"></textarea>
+          <div class="prev" id="molbaPrev" hidden></div>
         </div>
       </div>
     </div>
 
     <div class="sec">
       <h3>Напомена теренца</h3>
-      <textarea class="in" id="napomena" placeholder="Опционо (нпр. доћи поново после 17 ч)"></textarea>
+      <textarea class="in" id="napomena" placeholder="Опционо – може латиницом (нпр. doći ponovo posle 17h)"></textarea>
+      <div class="prev" id="napomenaPrev" hidden></div>
     </div>
   </div>
   <div class="bar"><button class="btn" id="sendBtn" type="button" disabled>ОК – пошаљи</button></div>
@@ -284,19 +289,34 @@ const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now() + "-" + Math.random().toString(16).slice(2));
 
-/* Латиница -> ћирилица (само за приказ; подаци у бази остају исти) */
+/* Латиница -> ћирилица */
 const DIGRAPH = { "Lj": "Љ", "LJ": "Љ", "lj": "љ", "lJ": "љ", "Nj": "Њ", "NJ": "Њ", "nj": "њ", "nJ": "њ",
                   "Dž": "Џ", "DŽ": "Џ", "dž": "џ", "dŽ": "џ" };
 const SINGLE = { a:"а",b:"б",c:"ц",č:"ч",ć:"ћ",d:"д",đ:"ђ",e:"е",f:"ф",g:"г",h:"х",i:"и",j:"ј",k:"к",l:"л",
   m:"м",n:"н",o:"о",p:"п",r:"р",s:"с",š:"ш",t:"т",u:"у",v:"в",z:"з",ž:"ж",
   A:"А",B:"Б",C:"Ц",Č:"Ч",Ć:"Ћ",D:"Д",Đ:"Ђ",E:"Е",F:"Ф",G:"Г",H:"Х",I:"И",J:"Ј",K:"К",L:"Л",
   M:"М",N:"Н",O:"О",P:"П",R:"Р",S:"С",Š:"Ш",T:"Т",U:"У",V:"В",Z:"З",Ž:"Ж" };
-function cyr(s) {
+const singles = s => s.replace(/[A-Za-zČčĆćĐđŠšŽž]/g, ch => SINGLE[ch] || ch);
+function cyr(s) {                          // за приказ имена, адреса, места
   if (s == null) return "";
-  return String(s)
-    .replace(/Lj|LJ|lj|lJ|Nj|NJ|nj|nJ|Dž|DŽ|dž|dŽ/g, m => DIGRAPH[m])
-    .replace(/[A-Za-zČčĆćĐđŠšŽž]/g, ch => SINGLE[ch] || ch);
+  return singles(String(s).replace(/Lj|LJ|lj|lJ|Nj|NJ|nj|nJ|Dž|DŽ|dž|dŽ/g, m => DIGRAPH[m]));
 }
+/* За текст који куца теренац: исто, плус
+   – „dj” -> „ђ” (кад телефон нема слово đ),
+   – изузеци где „dž” није џ (nadživeti, podžupan, odžaliti…),
+   – мејл адресе и линкови остају латиницом. */
+function cyrWord(w) {
+  if (/[@\/]|^www\.|\.(com|rs|net|org)\b/i.test(w)) return w;
+  w = w.replace(/^(pred|nad|pod|od)(ž)/i, (m, a, b) => singles(a) + singles(b));
+  w = w.replace(/Dj|DJ|dj|dJ/g, m => (m[0] === "D" ? "Ђ" : "ђ"));
+  return cyr(w);
+}
+function cyrText(s) {
+  if (s == null) return "";
+  return String(s).split(/(\s+)/).map(p => (/\s/.test(p) || !p) ? p : cyrWord(p)).join("");
+}
+const hasLatin = s => /[A-Za-zČčĆćĐđŠšŽž]/.test(s || "");
+
 const coll = new Intl.Collator("sr-Cyrl", { numeric: true, sensitivity: "base" });
 function cmp(a, b) {                       // празно увек на крај
   a = a == null ? "" : String(a); b = b == null ? "" : String(b);
@@ -751,6 +771,14 @@ function setSortMenu(open) {
 }
 
 /* ============================ АНКЕТА ============================ */
+function updPrev(id) {                     // приказ како ће текст бити сачуван (ћирилицом)
+  const v = $("#" + id).value;
+  const p = $("#" + id + "Prev");
+  if (!v.trim() || !hasLatin(v)) { p.hidden = true; return; }
+  p.innerHTML = `<b>Чува се ћирилицом:</b> ${esc(cyrText(v))}`;
+  p.hidden = false;
+}
+
 function openForm(id, edit) {
   current = (edit ? done : tasks).find(t => t.id === id);
   if (!current) return;
@@ -764,6 +792,7 @@ function openForm(id, edit) {
   $("#consent").checked = form.pristanak;
   $("#molba").value = s ? (s.molba || "") : "";
   $("#napomena").value = s ? (s.napomena || "") : "";
+  updPrev("molba"); updPrev("napomena");
   $("#formTitle").textContent = edit ? "Измена анкете" : "";
   $("#sendBtn").textContent = edit ? "Сачувај измене" : "ОК – пошаљи";
 
@@ -829,8 +858,8 @@ async function submitForm() {
     pristanak: anket,
     podrzava: anket ? form.podrzava : null,
     izlazi: anket ? form.izlazi : null,
-    molba: anket ? $("#molba").value.trim() : "",
-    napomena: $("#napomena").value.trim()
+    molba: anket ? cyrText($("#molba").value.trim()) : "",       // у базу иде ћирилица
+    napomena: cyrText($("#napomena").value.trim())
   };
   const label = fullName(current);
   const wasEdit = editMode;
@@ -941,16 +970,18 @@ document.querySelectorAll("#form .seg").forEach(seg => {
     form[f] = form[f] === b.dataset.val && f !== "ishod" ? null : b.dataset.val;
     if (f === "ishod" && form.ishod !== "anketiran") {
       form.pristanak = false; form.podrzava = null; form.izlazi = null;
-      $("#consent").checked = false; $("#molba").value = "";
+      $("#consent").checked = false; $("#molba").value = ""; updPrev("molba");
     }
     renderForm();
   });
 });
 $("#consent").addEventListener("change", ev => {
   form.pristanak = ev.target.checked;
-  if (!form.pristanak) { form.podrzava = null; form.izlazi = null; $("#molba").value = ""; }
+  if (!form.pristanak) { form.podrzava = null; form.izlazi = null; $("#molba").value = ""; updPrev("molba"); }
   renderForm();
 });
+$("#molba").addEventListener("input", () => updPrev("molba"));
+$("#napomena").addEventListener("input", () => updPrev("napomena"));
 $("#backBtn").addEventListener("click", () => closeForm(false));
 $("#sendBtn").addEventListener("click", submitForm);
 window.addEventListener("popstate", () => closeForm(true));
