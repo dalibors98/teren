@@ -1,8 +1,8 @@
 {
-  "name": "Teren",
-  "short_name": "Teren",
-  "description": "Ankete na terenu",
-  "lang": "sr",
+  "name": "Терен",
+  "short_name": "Терен",
+  "description": "Анкете на терену",
+  "lang": "sr-Cyrl",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

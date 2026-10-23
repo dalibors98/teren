@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sr">
+<html lang="sr-Cyrl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -7,8 +7,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Teren">
-<title>Teren</title>
+<meta name="apple-mobile-web-app-title" content="Терен">
+<title>Терен</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
@@ -23,14 +23,14 @@
   :root{--bg:#111315; --card:#1c1f22; --text:#eef1f2; --muted:#9aa3a8; --line:#2c3135;
         --accbg:#173326; --warnbg:#3a2e14; --shadow:none;}
 }
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-style:normal}
 html,body{margin:0;background:var(--bg);color:var(--text);
   font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 button,input,textarea{font:inherit;color:inherit}
 [hidden]{display:none!important}
 .screen{min-height:100vh;min-height:100dvh}
 
-/* ---------- login ---------- */
+/* ---------- пријава ---------- */
 #login{display:flex;align-items:center;justify-content:center;padding:24px 20px calc(24px + var(--safe-b))}
 .login-box{width:100%;max-width:380px}
 .logo{width:76px;height:76px;border-radius:20px;display:block;margin:0 auto 14px;box-shadow:var(--shadow)}
@@ -47,19 +47,25 @@ textarea.in{min-height:84px;resize:vertical}
 .btn:active:not(:disabled){transform:scale(.99)}
 .err{color:var(--danger);min-height:22px;margin-top:12px;text-align:center;font-size:15px}
 
-/* ---------- top bar ---------- */
+/* ---------- горња трака ---------- */
 .top{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(10px + var(--safe-t)) 16px 8px;
   border-bottom:1px solid var(--line)}
 .toprow{display:flex;align-items:center;gap:10px}
 .toptitle{flex:1;min-width:0}
 .toptitle b{display:block;font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .toptitle span{color:var(--muted);font-size:14px}
-.icon-btn{border:0;background:var(--card);box-shadow:var(--shadow);width:42px;height:42px;border-radius:12px;
-  font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.icon-btn.txt{width:auto;padding:0 14px;font-size:14px;font-weight:600}
+.icon-btn{border:0;background:var(--card);box-shadow:var(--shadow);height:42px;min-width:42px;border-radius:12px;
+  font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0 10px}
+.icon-btn.txt{font-size:14px;font-weight:600;padding:0 14px}
 .icon-btn.spin{animation:spin .9s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .search{margin-top:10px}
+.sortrow{display:flex;align-items:center;gap:8px;margin-top:8px}
+.sortrow .lbl{color:var(--muted);font-size:14px;white-space:nowrap}
+.sortseg{display:flex;flex:1;background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:3px}
+.sortseg button{flex:1;border:0;background:none;border-radius:9px;padding:8px 4px;font-size:14px;font-weight:600;
+  color:var(--muted);cursor:pointer}
+.sortseg button.on{background:var(--accbg);color:var(--acc)}
 .status{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:13px}
 .pill{border-radius:999px;padding:4px 10px;background:var(--card);color:var(--muted);box-shadow:var(--shadow)}
 .pill.ok{background:var(--accbg);color:var(--acc)}
@@ -67,25 +73,27 @@ textarea.in{min-height:84px;resize:vertical}
 .pill.bad{background:#fde8e8;color:var(--danger)}
 @media (prefers-color-scheme:dark){.pill.bad{background:#3b1d1d}}
 
-/* ---------- list ---------- */
+/* ---------- листа ---------- */
 .list{padding:12px 12px calc(24px + var(--safe-b))}
 .card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:14px 16px;margin-bottom:10px;
   display:flex;align-items:center;gap:12px;cursor:pointer;border:1px solid transparent}
 .card:active{border-color:var(--acc2)}
 .card .t{flex:1;min-width:0}
 .card .n{font-weight:600;font-size:17px}
-.card .a{color:var(--muted);font-size:15px;margin-top:2px}
+.card .a{color:var(--text);opacity:.8;font-size:15px;margin-top:2px}
+.card .m{color:var(--muted);font-size:13px;margin-top:1px}
 .chev{color:var(--muted);font-size:22px}
 .empty{text-align:center;color:var(--muted);padding:60px 24px}
 .empty .big{font-size:44px;margin-bottom:8px}
 
-/* ---------- form ---------- */
+/* ---------- анкета ---------- */
 #form{position:fixed;inset:0;z-index:20;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch}
 .back{border:0;background:none;color:var(--acc);font-size:17px;padding:8px 4px;cursor:pointer;font-weight:600}
 .fbody{padding:14px 14px calc(110px + var(--safe-b))}
 .person{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:16px}
 .person .n{font-size:21px;font-weight:700}
-.person .a{color:var(--muted);margin-top:4px}
+.person .a{margin-top:4px}
+.person .m{color:var(--muted);font-size:14px}
 .extra{margin-top:10px;font-size:14px;color:var(--muted)}
 .extra div{padding:2px 0}
 .maplink{display:inline-block;margin-top:12px;color:var(--acc);font-weight:600;text-decoration:none}
@@ -94,8 +102,9 @@ textarea.in{min-height:84px;resize:vertical}
 .seg{display:flex;gap:8px;flex-wrap:wrap}
 .seg button{flex:1 1 0;min-width:88px;border:1.5px solid var(--line);background:var(--bg);border-radius:12px;
   padding:13px 8px;font-weight:600;cursor:pointer}
+.seg.grid2{display:grid;grid-template-columns:1fr 1fr}
+.seg.grid2 button{min-width:0;text-align:left;padding:13px 12px}
 .seg button.on{border-color:var(--acc2);background:var(--accbg);color:var(--acc)}
-.seg button:disabled{opacity:.4}
 .consent{display:flex;gap:12px;align-items:flex-start;cursor:pointer;font-size:15px}
 .consent input{width:26px;height:26px;flex:0 0 26px;accent-color:var(--acc);margin:0}
 .q{margin-top:16px}
@@ -107,7 +116,7 @@ textarea.in{min-height:84px;resize:vertical}
   background:linear-gradient(to top,var(--bg) 70%,transparent);z-index:21}
 .bar .btn{margin:0;font-size:17px}
 
-/* ---------- toast ---------- */
+/* ---------- обавештење ---------- */
 #toast{position:fixed;left:50%;bottom:calc(24px + var(--safe-b));transform:translateX(-50%) translateY(20px);
   background:#1f2a24;color:#fff;padding:12px 18px;border-radius:14px;font-size:15px;opacity:0;
   transition:.25s;z-index:50;max-width:90vw;text-align:center;pointer-events:none}
@@ -116,51 +125,59 @@ textarea.in{min-height:84px;resize:vertical}
 </head>
 <body>
 
-<!-- ================= PRIJAVA ================= -->
+<!-- ================= ПРИЈАВА ================= -->
 <section id="login" class="screen" hidden>
   <form class="login-box" id="loginForm" autocomplete="on">
     <img class="logo" src="icon-192.png" alt="">
-    <h1>Teren</h1>
-    <div class="sub">Prijava terenca</div>
-    <label class="f" for="lu">Korisničko ime</label>
+    <h1>Терен</h1>
+    <div class="sub">Пријава теренца</div>
+    <label class="f" for="lu">Корисничко име</label>
     <input class="in" id="lu" name="username" autocomplete="username" autocapitalize="none"
            autocorrect="off" spellcheck="false" required>
-    <label class="f" for="lp">Šifra</label>
+    <label class="f" for="lp">Шифра</label>
     <input class="in" id="lp" name="password" type="password" autocomplete="current-password" required>
-    <button class="btn" id="lbtn" type="submit">Prijavi se</button>
+    <button class="btn" id="lbtn" type="submit">Пријави се</button>
     <div class="err" id="lerr" aria-live="polite"></div>
   </form>
 </section>
 
-<!-- ================= LISTA ADRESA ================= -->
+<!-- ================= ЛИСТА АДРЕСА ================= -->
 <section id="main" class="screen" hidden>
   <div class="top">
     <div class="toprow">
       <div class="toptitle"><b id="teamName">—</b><span id="userName"></span></div>
-      <button class="icon-btn" id="refreshBtn" type="button" aria-label="Osveži">↻</button>
-      <button class="icon-btn txt" id="logoutBtn" type="button">Odjava</button>
+      <button class="icon-btn" id="refreshBtn" type="button" aria-label="Освежи">↻</button>
+      <button class="icon-btn txt" id="logoutBtn" type="button">Одјава</button>
     </div>
-    <input class="in search" id="search" type="search" placeholder="Pretraga: ime, ulica, mesto…" autocomplete="off">
+    <input class="in search" id="search" type="search" placeholder="Претрага: име, улица, место…" autocomplete="off">
+    <div class="sortrow">
+      <span class="lbl">Сортирај:</span>
+      <div class="sortseg" id="sortSeg">
+        <button type="button" data-sort="prezime">Презиме</button>
+        <button type="button" data-sort="adresa">Адреса</button>
+        <button type="button" data-sort="stan">Стан</button>
+      </div>
+    </div>
     <div class="status" id="status" aria-live="polite"></div>
   </div>
   <div class="list" id="list"></div>
 </section>
 
-<!-- ================= ANKETA ================= -->
+<!-- ================= АНКЕТА ================= -->
 <section id="form" hidden>
   <div class="top"><div class="toprow">
-    <button class="back" id="backBtn" type="button">‹ Nazad</button>
+    <button class="back" id="backBtn" type="button">‹ Назад</button>
     <div class="toptitle"></div>
   </div></div>
   <div class="fbody">
     <div class="person" id="person"></div>
 
     <div class="sec">
-      <h3>Ishod posete</h3>
+      <h3>Исход посете</h3>
       <div class="seg" data-field="ishod">
-        <button type="button" data-val="anketiran">Anketiran</button>
-        <button type="button" data-val="nije_kod_kuce">Nije kod kuće</button>
-        <button type="button" data-val="odbio">Odbio</button>
+        <button type="button" data-val="anketiran">Анкетиран</button>
+        <button type="button" data-val="nije_kod_kuce">4 – Није код куће</button>
+        <button type="button" data-val="odbio">3 – Одбио</button>
       </div>
     </div>
 
@@ -168,58 +185,61 @@ textarea.in{min-height:84px;resize:vertical}
       <div class="sec">
         <label class="consent">
           <input type="checkbox" id="consent">
-          <span><b>Građanin je dao pristanak</b> da se njegovi odgovori upišu i obrađuju.</span>
+          <span><b>Грађанин је дао пристанак</b> да се његови одговори упишу и обрађују.</span>
         </label>
-        <div class="hint">Bez pristanka se odgovori ne upisuju – izaberi „Odbio”.</div>
+        <div class="hint">Без пристанка се одговори не уписују – изабери „3 – Одбио”.</div>
       </div>
 
       <div class="sec" id="questions">
         <div class="q">
-          <div class="lbl">Da li podržava rad stranke?</div>
-          <div class="seg" data-field="podrzava">
-            <button type="button" data-val="da">Da</button>
-            <button type="button" data-val="ne">Ne</button>
-            <button type="button" data-val="neodlucan">Neodlučan</button>
+          <div class="lbl">Статус:</div>
+          <div class="seg grid2" data-field="podrzava">
+            <button type="button" data-val="0">0 – Члан</button>
+            <button type="button" data-val="1">1 – Сигуран глас</button>
+            <button type="button" data-val="2">2 – Неопредељен</button>
+            <button type="button" data-val="3">3 – Против</button>
+            <button type="button" data-val="4">4 – Није кући</button>
+            <button type="button" data-val="99">99 – Нема</button>
           </div>
         </div>
         <div class="q">
-          <div class="lbl">Da li izlazi na glasanje?</div>
+          <div class="lbl">Да ли излази на гласање?</div>
           <div class="seg" data-field="izlazi">
-            <button type="button" data-val="da">Da</button>
-            <button type="button" data-val="ne">Ne</button>
-            <button type="button" data-val="ne_zna">Ne zna</button>
+            <button type="button" data-val="da">Да</button>
+            <button type="button" data-val="ne">Не</button>
+            <button type="button" data-val="ne_zna">Не зна</button>
           </div>
         </div>
         <div class="q">
-          <div class="lbl">Molba / zahtev građanina</div>
-          <textarea class="in" id="molba" placeholder="Upiši ako ima neku molbu…"></textarea>
+          <div class="lbl">Молба / захтев грађанина</div>
+          <textarea class="in" id="molba" placeholder="Упиши ако има неку молбу…"></textarea>
         </div>
       </div>
     </div>
 
     <div class="sec">
-      <h3>Napomena terenca</h3>
-      <textarea class="in" id="napomena" placeholder="Opciono (npr. doći ponovo posle 17h)"></textarea>
+      <h3>Напомена теренца</h3>
+      <textarea class="in" id="napomena" placeholder="Опционо (нпр. доћи поново после 17 ч)"></textarea>
     </div>
   </div>
-  <div class="bar"><button class="btn" id="sendBtn" type="button" disabled>OK – pošalji</button></div>
+  <div class="bar"><button class="btn" id="sendBtn" type="button" disabled>ОК – пошаљи</button></div>
 </section>
 
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script>
 "use strict";
-/* ============================ PODEŠAVANJA ============================ */
+/* ============================ ПОДЕШАВАЊА ============================ */
 const CFG = {
   url: "https://ypyrzcaodduoxvnxxjml.supabase.co",
-  key: "sb_publishable_JtXUDPjL_eRyKSvaBSW81A_SOygBiD2",   // javni ključ – zaštita je preko prijave i RLS
+  key: "sb_publishable_JtXUDPjL_eRyKSvaBSW81A_SOygBiD2",   // јавни кључ – заштита је преко пријаве и RLS
   domain: "teren.local",
   poll: 30000
 };
 const K = { session: "teren_session", profile: "teren_profile", tasks: "teren_tasks",
-            queue: "teren_queue", user: "teren_last_user" };
+            queue: "teren_queue", user: "teren_last_user", sort: "teren_sort" };
 
-/* ============================ POMOĆNO ============================ */
+/* ============================ ПОМОЋНО ============================ */
 const $ = s => document.querySelector(s);
 const load = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
 const save = (k, v) => { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); };
@@ -227,10 +247,38 @@ const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now() + "-" + Math.random().toString(16).slice(2));
 
+/* Латиница -> ћирилица (само за приказ; подаци у бази остају исти) */
+const DIGRAPH = { "Lj": "Љ", "LJ": "Љ", "lj": "љ", "lJ": "љ", "Nj": "Њ", "NJ": "Њ", "nj": "њ", "nJ": "њ",
+                  "Dž": "Џ", "DŽ": "Џ", "dž": "џ", "dŽ": "џ" };
+const SINGLE = { a:"а",b:"б",c:"ц",č:"ч",ć:"ћ",d:"д",đ:"ђ",e:"е",f:"ф",g:"г",h:"х",i:"и",j:"ј",k:"к",l:"л",
+  m:"м",n:"н",o:"о",p:"п",r:"р",s:"с",š:"ш",t:"т",u:"у",v:"в",z:"з",ž:"ж",
+  A:"А",B:"Б",C:"Ц",Č:"Ч",Ć:"Ћ",D:"Д",Đ:"Ђ",E:"Е",F:"Ф",G:"Г",H:"Х",I:"И",J:"Ј",K:"К",L:"Л",
+  M:"М",N:"Н",O:"О",P:"П",R:"Р",S:"С",Š:"Ш",T:"Т",U:"У",V:"В",Z:"З",Ž:"Ж" };
+function cyr(s) {
+  if (s == null) return "";
+  return String(s)
+    .replace(/Lj|LJ|lj|lJ|Nj|NJ|nj|nJ|Dž|DŽ|dž|dŽ/g, m => DIGRAPH[m])
+    .replace(/[A-Za-zČčĆćĐđŠšŽž]/g, ch => SINGLE[ch] || ch);
+}
+const coll = new Intl.Collator("sr-Cyrl", { numeric: true, sensitivity: "base" });
+function cmp(a, b) {                       // празно увек на крај
+  a = a == null ? "" : String(a); b = b == null ? "" : String(b);
+  if (!a && b) return 1;
+  if (a && !b) return -1;
+  return coll.compare(a, b);
+}
+function plural(n, one, few, many) {
+  const m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return one;
+  if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
+  return many;
+}
+
 let session = load(K.session);
 let profile = load(K.profile);
 let tasks = load(K.tasks) || [];
 let queue = load(K.queue) || [];
+let sortBy = load(K.sort) || "adresa";
 let current = null;
 let form = {};
 let online = navigator.onLine;
@@ -246,23 +294,25 @@ function toast(msg, ms) {
   toast._t = setTimeout(() => t.classList.remove("show"), ms || 2600);
 }
 
-/* ============================ MREŽA ============================ */
+/* ============================ МРЕЖА ============================ */
 class NetError extends Error {}
 class ApiError extends Error {
   constructor(status, code, msg) { super(msg); this.status = status; this.code = code || ""; }
 }
 
 const SR = [
-  ["invalid_credentials", "Pogrešno korisničko ime ili šifra."],
-  ["invalid login credentials", "Pogrešno korisničko ime ili šifra."],
-  ["user_banned", "Ovaj nalog je onemogućen."],
-  ["user is banned", "Ovaj nalog je onemogućen."],
-  ["email not confirmed", "Nalog nije aktiviran. Javi se administratoru."]
+  ["invalid_credentials", "Погрешно корисничко име или шифра."],
+  ["invalid login credentials", "Погрешно корисничко име или шифра."],
+  ["user_banned", "Овај налог је онемогућен."],
+  ["user is banned", "Овај налог је онемогућен."],
+  ["email not confirmed", "Налог није активиран. Јави се администратору."],
+  ["does not exist", "База није ажурирана – администратор треба да покрене teren_baza_3.sql."],
+  ["violates check constraint", "База није ажурирана – администратор треба да покрене teren_baza_3.sql."]
 ];
 function srMsg(m) {
   const low = (m || "").toLowerCase();
   for (const [k, v] of SR) if (low.includes(k)) return v;
-  return m || "Greška na serveru.";
+  return m || "Грешка на серверу.";
 }
 
 async function http(method, path, opt) {
@@ -279,7 +329,7 @@ async function http(method, path, opt) {
     r = await fetch(url, { method, headers: h, cache: "no-store", signal: ctl.signal,
                            body: opt.body == null ? undefined : JSON.stringify(opt.body) });
   } catch (e) {
-    throw new NetError("Nema interneta.");
+    throw new NetError("Нема интернета.");
   } finally { clearTimeout(timer); }
   const txt = await r.text();
   let j = null;
@@ -310,7 +360,7 @@ function setSession(d) {
 
 let refreshing = null;
 async function ensureToken() {
-  if (!session || !session.access) throw new ApiError(401, "no_session", "Nisi prijavljen.");
+  if (!session || !session.access) throw new ApiError(401, "no_session", "Ниси пријављен.");
   if (Date.now() / 1000 < session.exp - 60) return;
   if (!refreshing) {
     refreshing = (async () => {
@@ -319,7 +369,7 @@ async function ensureToken() {
                                                         body: { refresh_token: session.refresh } });
         setSession(d);
       } catch (e) {
-        if (e instanceof ApiError) throw new ApiError(401, "refresh_failed", "Sesija je istekla. Prijavi se ponovo.");
+        if (e instanceof ApiError) throw new ApiError(401, "refresh_failed", "Сесија је истекла. Пријави се поново.");
         throw e;
       } finally { refreshing = null; }
     })();
@@ -327,7 +377,7 @@ async function ensureToken() {
   return refreshing;
 }
 
-/* ============================ PRIJAVA ============================ */
+/* ============================ ПРИЈАВА ============================ */
 async function login(username, password) {
   const u = username.trim().toLowerCase();
   const email = u.includes("@") ? u : u + "@" + CFG.domain;
@@ -341,9 +391,9 @@ async function login(username, password) {
 async function loadProfile() {
   const rows = await http("GET", "/rest/v1/profiles", {
     params: { select: "username,full_name,team_id,active", id: "eq." + session.uid } });
-  if (!rows || !rows.length) throw new ApiError(403, "no_profile", "Nalog nema profil. Javi se administratoru.");
+  if (!rows || !rows.length) throw new ApiError(403, "no_profile", "Налог нема профил. Јави се администратору.");
   const p = rows[0];
-  if (!p.active) throw new ApiError(403, "inactive", "Ovaj nalog je onemogućen.");
+  if (!p.active) throw new ApiError(403, "inactive", "Овај налог је онемогућен.");
   let teamName = "";
   if (p.team_id) {
     const t = await http("GET", "/rest/v1/teams", { params: { select: "name", id: "eq." + p.team_id } });
@@ -361,11 +411,11 @@ function logout(msg) {
   showLogin(msg || "");
 }
 
-/* ============================ PODACI ============================ */
+/* ============================ ПОДАЦИ ============================ */
 async function loadTasks() {
   const rows = await http("GET", "/rest/v1/tasks", {
-    params: { select: "id,ime,prezime,adresa,mesto,extra,assigned_at", status: "eq.dodeljeno",
-              order: "mesto.asc,adresa.asc", limit: "5000" } });
+    params: { select: "id,ime,prezime,adresa,mesto,sprat,stan,extra,assigned_at", status: "eq.dodeljeno",
+              limit: "5000" } });
   tasks = rows || [];
   save(K.tasks, tasks);
 }
@@ -381,13 +431,13 @@ async function flushQueue() {
       if (e.status === 401) throw e;
       if (e.status === 409 || e.code === "23505") {
         dropFromQueue(item.qid);
-        toast("„" + item.label + "” je već završio neko drugi iz tima.", 3500);
+        toast("„" + item.label + "” је већ завршио неко други из тима.", 3500);
       } else if (e.status === 403 || e.code === "42501") {
         dropFromQueue(item.qid);
-        toast("„" + item.label + "” više nije dodeljena tvom timu – anketa nije poslata.", 4000);
+        toast("„" + item.label + "” више није додељена твом тиму – анкета није послата.", 4000);
       } else {
         dropFromQueue(item.qid);
-        toast("Anketa za „" + item.label + "” odbijena: " + e.message, 4500);
+        toast("Анкета за „" + item.label + "” одбијена: " + e.message, 4500);
       }
     }
   }
@@ -396,7 +446,7 @@ function dropFromQueue(qid) {
   const item = queue.find(q => q.qid === qid);
   queue = queue.filter(q => q.qid !== qid);
   save(K.queue, queue);
-  if (item) {                        // adresa je obrađena – skloni je sa liste odmah
+  if (item) {                        // адреса је обрађена – склони је са листе одмах
     tasks = tasks.filter(t => t.id !== item.payload.task_id);
     save(K.tasks, tasks);
   }
@@ -412,18 +462,18 @@ async function sync(manual) {
     await loadTasks();
     online = true;
     lastSync = new Date();
-    if (manual) toast("Osveženo");
+    if (manual) toast("Освежено");
   } catch (e) {
     if (e instanceof NetError) {
       online = false;
-      if (manual) toast("Nema interneta – prikazujem sačuvane adrese.");
+      if (manual) toast("Нема интернета – приказујем сачуване адресе.");
     } else if (e.status === 401 || e.code === "inactive" || e.code === "no_profile") {
       syncing = false;
       $("#refreshBtn").classList.remove("spin");
       logout(e.message);
       return;
     } else {
-      toast(e.message, 4000);
+      toast(e.message, 4500);
     }
   } finally {
     syncing = false;
@@ -438,7 +488,27 @@ function startPolling() {
 }
 function stopPolling() { if (pollTimer) clearInterval(pollTimer); pollTimer = null; }
 
-/* ============================ PRIKAZ ============================ */
+/* ============================ ПОЉА АДРЕСЕ ============================ */
+const EXTRA_SPRAT = /^(sprat|спрат)$/i;
+const EXTRA_STAN = /^(stan|стан|br\.?\s*stana|број\s*стана|broj\s*stana)$/i;
+function extraOf(t) { return t.extra && typeof t.extra === "object" ? t.extra : {}; }
+function fromExtra(t, rx) {
+  const e = extraOf(t);
+  for (const k of Object.keys(e)) if (rx.test(k.trim()) && e[k] !== "" && e[k] != null) return String(e[k]);
+  return "";
+}
+const sprat = t => (t.sprat != null && String(t.sprat).trim() !== "") ? String(t.sprat).trim() : fromExtra(t, EXTRA_SPRAT);
+const stan  = t => (t.stan  != null && String(t.stan).trim()  !== "") ? String(t.stan).trim()  : fromExtra(t, EXTRA_STAN);
+const fullName = t => cyr([t.ime, t.prezime].filter(Boolean).join(" ")) || "(без имена)";
+function addrLine(t) {                     // „Улица 10, спрат 4, стан 20”
+  const parts = [];
+  if (t.adresa) parts.push(cyr(t.adresa));
+  if (sprat(t)) parts.push("спрат " + cyr(sprat(t)));
+  if (stan(t)) parts.push("стан " + cyr(stan(t)));
+  return parts.join(", ");
+}
+
+/* ============================ ПРИКАЗ ============================ */
 function show(id) {
   ["#login", "#main"].forEach(s => { $(s).hidden = (s !== id); });
 }
@@ -451,55 +521,72 @@ function showLogin(msg) {
   ($("#lu").value ? $("#lp") : $("#lu")).focus();
 }
 
-function visibleTasks() {
-  const pending = new Set(queue.map(q => q.payload.task_id));
-  const q = $("#search").value.trim().toLowerCase();
-  return tasks.filter(t => !pending.has(t.id)).filter(t => {
-    if (!q) return true;
-    return [t.ime, t.prezime, t.adresa, t.mesto].join(" ").toLowerCase().includes(q);
+function sortTasks(list) {
+  const s = sortBy;
+  return list.slice().sort((a, b) => {
+    let r = 0;
+    if (s === "prezime") {
+      r = cmp(cyr(a.prezime), cyr(b.prezime)) || cmp(cyr(a.ime), cyr(b.ime));
+    } else if (s === "stan") {
+      r = cmp(stan(a), stan(b)) || cmp(cyr(a.adresa), cyr(b.adresa));
+    }
+    return r || cmp(cyr(a.mesto), cyr(b.mesto)) || cmp(cyr(a.adresa), cyr(b.adresa))
+             || cmp(sprat(a), sprat(b)) || cmp(stan(a), stan(b)) || cmp(cyr(a.prezime), cyr(b.prezime));
   });
 }
 
-function addrLine(t) {
-  return [t.adresa, t.mesto].filter(Boolean).join(", ");
+function visibleTasks() {
+  const pending = new Set(queue.map(q => q.payload.task_id));
+  const q = cyr($("#search").value.trim()).toLowerCase();
+  const list = tasks.filter(t => !pending.has(t.id)).filter(t => {
+    if (!q) return true;
+    return cyr([t.ime, t.prezime, t.adresa, t.mesto, sprat(t), stan(t)].join(" ")).toLowerCase().includes(q);
+  });
+  return sortTasks(list);
+}
+
+function renderSort() {
+  document.querySelectorAll("#sortSeg button").forEach(b => b.classList.toggle("on", b.dataset.sort === sortBy));
 }
 
 function renderMain() {
   if (!profile) return;
-  $("#teamName").textContent = profile.team_name || "Bez tima";
-  $("#userName").textContent = profile.full_name || profile.username;
+  $("#teamName").textContent = cyr(profile.team_name) || "Без тима";
+  $("#userName").textContent = cyr(profile.full_name || profile.username);
+  renderSort();
 
   const list = visibleTasks();
   const total = tasks.filter(t => !queue.some(q => q.payload.task_id === t.id)).length;
   const st = [];
-  st.push(`<span class="pill">${total} ${total === 1 ? "adresa" : "adresa"}</span>`);
-  st.push(online ? `<span class="pill ok">● Na mreži</span>` : `<span class="pill bad">● Bez interneta</span>`);
-  if (queue.length) st.push(`<span class="pill warn">⏳ Čeka slanje: ${queue.length}</span>`);
-  if (lastSync) st.push(`<span class="pill">${lastSync.toLocaleTimeString("sr-RS", { hour: "2-digit", minute: "2-digit" })}</span>`);
+  st.push(`<span class="pill">${total} ${plural(total, "адреса", "адресе", "адреса")}</span>`);
+  st.push(online ? `<span class="pill ok">● На мрежи</span>` : `<span class="pill bad">● Без интернета</span>`);
+  if (queue.length) st.push(`<span class="pill warn">⏳ Чека слање: ${queue.length}</span>`);
+  if (lastSync) st.push(`<span class="pill">${lastSync.toLocaleTimeString("sr-Cyrl-RS", { hour: "2-digit", minute: "2-digit" })}</span>`);
   $("#status").innerHTML = st.join("");
 
   const box = $("#list");
   if (!profile.team_id) {
-    box.innerHTML = `<div class="empty"><div class="big">👥</div>Nisi raspoređen ni u jedan tim.<br>Javi se administratoru.</div>`;
+    box.innerHTML = `<div class="empty"><div class="big">👥</div>Ниси распоређен ни у један тим.<br>Јави се администратору.</div>`;
     return;
   }
   if (!list.length) {
     box.innerHTML = $("#search").value.trim()
-      ? `<div class="empty"><div class="big">🔍</div>Nema rezultata pretrage.</div>`
-      : `<div class="empty"><div class="big">✅</div>Nema dodeljenih adresa.<br>Nove će se pojaviti same.</div>`;
+      ? `<div class="empty"><div class="big">🔍</div>Нема резултата претраге.</div>`
+      : `<div class="empty"><div class="big">✅</div>Нема додељених адреса.<br>Нове ће се појавити саме.</div>`;
     return;
   }
   box.innerHTML = list.map(t => `
     <div class="card" data-id="${esc(t.id)}" role="button" tabindex="0">
       <div class="t">
-        <div class="n">${esc([t.ime, t.prezime].filter(Boolean).join(" ") || "(bez imena)")}</div>
+        <div class="n">${esc(fullName(t))}</div>
         <div class="a">${esc(addrLine(t))}</div>
+        ${t.mesto ? `<div class="m">${esc(cyr(t.mesto))}</div>` : ""}
       </div>
       <div class="chev">›</div>
     </div>`).join("");
 }
 
-/* ============================ ANKETA ============================ */
+/* ============================ АНКЕТА ============================ */
 function openForm(id) {
   current = tasks.find(t => t.id === id);
   if (!current) return;
@@ -508,15 +595,17 @@ function openForm(id) {
   $("#molba").value = "";
   $("#napomena").value = "";
 
-  const extra = current.extra && typeof current.extra === "object" ? current.extra : {};
-  const extraHtml = Object.keys(extra).filter(k => extra[k] !== "" && extra[k] != null)
-    .map(k => `<div><b>${esc(k)}:</b> ${esc(extra[k])}</div>`).join("");
+  const extra = extraOf(current);
+  const extraHtml = Object.keys(extra)
+    .filter(k => extra[k] !== "" && extra[k] != null && !EXTRA_SPRAT.test(k.trim()) && !EXTRA_STAN.test(k.trim()))
+    .map(k => `<div><b>${esc(cyr(k))}:</b> ${esc(cyr(extra[k]))}</div>`).join("");
   const q = encodeURIComponent([current.adresa, current.mesto, "Srbija"].filter(Boolean).join(", "));
   $("#person").innerHTML = `
-    <div class="n">${esc([current.ime, current.prezime].filter(Boolean).join(" ") || "(bez imena)")}</div>
+    <div class="n">${esc(fullName(current))}</div>
     <div class="a">${esc(addrLine(current))}</div>
+    ${current.mesto ? `<div class="m">${esc(cyr(current.mesto))}</div>` : ""}
     ${extraHtml ? `<div class="extra">${extraHtml}</div>` : ""}
-    <a class="maplink" href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener">📍 Otvori u mapama</a>`;
+    <a class="maplink" href="https://www.openstreetmap.org/search?query=${q}" target="_blank" rel="noopener">📍 Отвори на мапи</a>`;
 
   $("#form").hidden = false;
   $("#form").scrollTop = 0;
@@ -548,7 +637,7 @@ function renderForm() {
 async function submitForm() {
   if (!current) return;
   const anket = form.ishod === "anketiran";
-  if (anket && !form.pristanak) { toast("Bez pristanka ne može – izaberi „Odbio”."); return; }
+  if (anket && !form.pristanak) { toast("Без пристанка не може – изабери „3 – Одбио”."); return; }
   const payload = {
     task_id: current.id,
     ishod: form.ishod,
@@ -558,7 +647,7 @@ async function submitForm() {
     molba: anket ? $("#molba").value.trim() : "",
     napomena: $("#napomena").value.trim()
   };
-  const label = [current.ime, current.prezime].filter(Boolean).join(" ") || addrLine(current);
+  const label = fullName(current);
   queue.push({ qid: uid(), label, payload, at: Date.now() });
   save(K.queue, queue);
   closeForm(false);
@@ -566,25 +655,25 @@ async function submitForm() {
   try {
     await flushQueue();
     online = true;
-    toast("✔ Poslato");
+    toast("✔ Послато");
   } catch (e) {
     if (e instanceof NetError) {
       online = false;
-      toast("Sačuvano na telefonu – poslaće se samo kad bude interneta.", 3500);
+      toast("Сачувано на телефону – послаће се само кад буде интернета.", 3500);
     } else if (e.status === 401) {
-      toast("Sesija je istekla – anketa čeka; prijavi se ponovo.", 4000);
+      toast("Сесија је истекла – анкета чека; пријави се поново.", 4000);
     }
   }
   renderMain();
 }
 
-/* ============================ DOGAĐAJI ============================ */
+/* ============================ ДОГАЂАЈИ ============================ */
 $("#loginForm").addEventListener("submit", async ev => {
   ev.preventDefault();
   const btn = $("#lbtn");
   $("#lerr").textContent = "";
-  if (!$("#lu").value.trim() || !$("#lp").value) { $("#lerr").textContent = "Upiši korisničko ime i šifru."; return; }
-  btn.disabled = true; btn.textContent = "Prijavljivanje…";
+  if (!$("#lu").value.trim() || !$("#lp").value) { $("#lerr").textContent = "Упиши корисничко име и шифру."; return; }
+  btn.disabled = true; btn.textContent = "Пријављивање…";
   try {
     await login($("#lu").value, $("#lp").value);
     queue = load(K.queue) || [];
@@ -595,9 +684,9 @@ $("#loginForm").addEventListener("submit", async ev => {
     startPolling();
   } catch (e) {
     session = null; save(K.session, null);
-    $("#lerr").textContent = e instanceof NetError ? "Nema interneta. Proveri vezu." : e.message;
+    $("#lerr").textContent = e instanceof NetError ? "Нема интернета. Провери везу." : e.message;
   } finally {
-    btn.disabled = false; btn.textContent = "Prijavi se";
+    btn.disabled = false; btn.textContent = "Пријави се";
   }
 });
 
@@ -610,11 +699,18 @@ $("#list").addEventListener("keydown", ev => {
   if (c && (ev.key === "Enter" || ev.key === " ")) { ev.preventDefault(); openForm(c.dataset.id); }
 });
 $("#search").addEventListener("input", renderMain);
+$("#sortSeg").addEventListener("click", ev => {
+  const b = ev.target.closest("button");
+  if (!b) return;
+  sortBy = b.dataset.sort;
+  save(K.sort, sortBy);
+  renderMain();
+});
 $("#refreshBtn").addEventListener("click", () => sync(true));
 $("#logoutBtn").addEventListener("click", () => {
   const msg = queue.length
-    ? `Imaš ${queue.length} neposlatih anketa. Ako se odjaviš, BIĆE IZGUBLJENE. Odjaviti se?`
-    : "Odjaviti se?";
+    ? `Имаш ${queue.length} непослатих анкета. Ако се одјавиш, БИЋЕ ИЗГУБЉЕНЕ. Одјавити се?`
+    : "Одјавити се?";
   if (confirm(msg)) logout("");
 });
 
@@ -650,7 +746,7 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 }
 
-/* ============================ START ============================ */
+/* ============================ СТАРТ ============================ */
 if (session && profile) {
   show("#main");
   renderMain();

@@ -1,5 +1,5 @@
-// Teren – service worker: aplikacija radi i bez interneta (adrese i ankete čuva sama stranica)
-const CACHE = "teren-v1";
+// Терен – service worker: апликација ради и без интернета
+const CACHE = "teren-v2";
 const ASSETS = ["./", "./index.html", "./manifest.json", "./icon-180.png", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", e => {
@@ -14,8 +14,8 @@ self.addEventListener("activate", e => {
   );
 });
 
-// Prvo mreža (uvek najnovija verzija), a bez interneta iz keša.
-// Zahtevi ka bazi (supabase.co) se NE keširaju.
+// Прво мрежа (увек најновија верзија), а без интернета из кеша.
+// Захтеви ка бази (supabase.co) се НЕ кеширају.
 self.addEventListener("fetch", e => {
   const url = new URL(e.request.url);
   if (e.request.method !== "GET" || url.origin !== self.location.origin) return;
