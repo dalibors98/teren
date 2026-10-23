@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Терен">
+<meta name="format-detection" content="telephone=no">
 <title>Терен</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -15,13 +16,13 @@
 <style>
 :root{
   --bg:#f3f5f4; --card:#ffffff; --text:#14181a; --muted:#6b7378; --line:#e3e7e5;
-  --acc:#1d8a55; --acc2:#21a366; --accbg:#e4f4ec; --danger:#d93f3f; --warn:#c77a00; --warnbg:#fff4de;
+  --acc:#1d8a55; --acc2:#21a366; --accbg:#e4f4ec; --danger:#d93f3f; --warn:#b86e00; --warnbg:#fff1d6;
   --shadow:0 1px 2px rgba(0,0,0,.06),0 4px 14px rgba(0,0,0,.05);
   --safe-b:env(safe-area-inset-bottom,0px); --safe-t:env(safe-area-inset-top,0px);
 }
 @media (prefers-color-scheme:dark){
   :root{--bg:#111315; --card:#1c1f22; --text:#eef1f2; --muted:#9aa3a8; --line:#2c3135;
-        --accbg:#173326; --warnbg:#3a2e14; --shadow:none;}
+        --accbg:#173326; --warnbg:#3a2e14; --warn:#f0b04a; --shadow:none;}
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-style:normal}
 html,body{margin:0;background:var(--bg);color:var(--text);
@@ -60,12 +61,27 @@ textarea.in{min-height:84px;resize:vertical}
 .icon-btn.spin{animation:spin .9s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .search{margin-top:10px}
-.sortrow{display:flex;align-items:center;gap:8px;margin-top:8px}
-.sortrow .lbl{color:var(--muted);font-size:14px;white-space:nowrap}
-.sortseg{display:flex;flex:1;background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:3px}
-.sortseg button{flex:1;border:0;background:none;border-radius:9px;padding:8px 4px;font-size:14px;font-weight:600;
-  color:var(--muted);cursor:pointer}
-.sortseg button.on{background:var(--accbg);color:var(--acc)}
+
+/* сортирање (падајући мени) + Попуњено */
+.toolrow{display:flex;gap:8px;margin-top:8px}
+.dd{position:relative;flex:1;min-width:0}
+.ddbtn{width:100%;height:42px;border:0;background:var(--card);box-shadow:var(--shadow);border-radius:12px;
+  padding:0 12px;font-size:15px;cursor:pointer;display:flex;align-items:center;gap:6px;text-align:left}
+.ddbtn .l{color:var(--muted)}
+.ddbtn b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ddbtn .car{margin-left:auto;color:var(--muted);font-size:13px}
+.ddmenu{position:absolute;top:calc(100% + 6px);left:0;min-width:100%;background:var(--card);border-radius:14px;
+  border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.18);padding:6px;z-index:10}
+.ddmenu button{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;border:0;
+  background:none;padding:12px;border-radius:10px;font-size:16px;text-align:left;cursor:pointer;white-space:nowrap}
+.ddmenu button.on{background:var(--accbg);color:var(--acc);font-weight:600}
+.ddmenu button.on::after{content:"✓"}
+.tabbtn{height:42px;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:0 14px;
+  font-weight:600;font-size:15px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.tabbtn .cnt{background:var(--accbg);color:var(--acc);border-radius:999px;padding:1px 8px;font-size:13px}
+.tabbtn.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.tabbtn.on .cnt{background:rgba(255,255,255,.25);color:#fff}
+
 .status{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:13px}
 .pill{border-radius:999px;padding:4px 10px;background:var(--card);color:var(--muted);box-shadow:var(--shadow)}
 .pill.ok{background:var(--accbg);color:var(--acc)}
@@ -75,6 +91,7 @@ textarea.in{min-height:84px;resize:vertical}
 
 /* ---------- листа ---------- */
 .list{padding:12px 12px calc(24px + var(--safe-b))}
+.lhint{color:var(--muted);font-size:14px;margin:2px 4px 10px}
 .card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:14px 16px;margin-bottom:10px;
   display:flex;align-items:center;gap:12px;cursor:pointer;border:1px solid transparent}
 .card:active{border-color:var(--acc2)}
@@ -82,6 +99,10 @@ textarea.in{min-height:84px;resize:vertical}
 .card .n{font-weight:600;font-size:17px}
 .card .a{color:var(--text);opacity:.8;font-size:15px;margin-top:2px}
 .card .m{color:var(--muted);font-size:13px;margin-top:1px}
+.badge{display:inline-block;border-radius:999px;padding:3px 10px;font-size:13px;font-weight:600;
+  background:var(--accbg);color:var(--acc);margin-top:7px}
+.badge.warn{background:var(--warnbg);color:var(--warn)}
+.badge.gray{background:var(--bg);color:var(--muted)}
 .chev{color:var(--muted);font-size:22px}
 .empty{text-align:center;color:var(--muted);padding:60px 24px}
 .empty .big{font-size:44px;margin-bottom:8px}
@@ -89,14 +110,20 @@ textarea.in{min-height:84px;resize:vertical}
 /* ---------- анкета ---------- */
 #form{position:fixed;inset:0;z-index:20;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch}
 .back{border:0;background:none;color:var(--acc);font-size:17px;padding:8px 4px;cursor:pointer;font-weight:600}
+#formTitle{font-weight:600;text-align:right;color:var(--muted);font-size:15px}
 .fbody{padding:14px 14px calc(110px + var(--safe-b))}
 .person{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:16px}
 .person .n{font-size:21px;font-weight:700}
 .person .a{margin-top:4px}
 .person .m{color:var(--muted);font-size:14px}
 .extra{margin-top:10px;font-size:14px;color:var(--muted)}
-.extra div{padding:2px 0}
-.maplink{display:inline-block;margin-top:12px;color:var(--acc);font-weight:600;text-decoration:none}
+.extra div{padding:3px 0}
+.tel{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:10px;background:var(--accbg);
+  color:var(--acc);font-weight:600;text-decoration:none;font-size:16px}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.maplink{color:var(--acc);font-weight:600;text-decoration:none}
+.cur{margin-top:10px;font-size:14px;color:var(--muted)}
+.cur .badge{margin-top:0;margin-left:4px}
 .sec{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:16px;margin-top:12px}
 .sec h3{margin:0 0 10px;font-size:16px}
 .seg{display:flex;gap:8px;flex-wrap:wrap}
@@ -150,13 +177,18 @@ textarea.in{min-height:84px;resize:vertical}
       <button class="icon-btn txt" id="logoutBtn" type="button">Одјава</button>
     </div>
     <input class="in search" id="search" type="search" placeholder="Претрага: име, улица, место…" autocomplete="off">
-    <div class="sortrow">
-      <span class="lbl">Сортирај:</span>
-      <div class="sortseg" id="sortSeg">
-        <button type="button" data-sort="prezime">Презиме</button>
-        <button type="button" data-sort="adresa">Адреса</button>
-        <button type="button" data-sort="stan">Стан</button>
+    <div class="toolrow">
+      <div class="dd" id="sortDD">
+        <button class="ddbtn" id="sortBtn" type="button" aria-haspopup="true" aria-expanded="false">
+          <span class="l">Сортирај:</span> <b id="sortLbl">Адреса</b> <span class="car">▼</span>
+        </button>
+        <div class="ddmenu" id="sortMenu" role="menu" hidden>
+          <button type="button" role="menuitemradio" data-sort="prezime">Презиме</button>
+          <button type="button" role="menuitemradio" data-sort="adresa">Адреса</button>
+          <button type="button" role="menuitemradio" data-sort="stan">Број стана</button>
+        </div>
       </div>
+      <button class="tabbtn" id="doneBtn" type="button" aria-pressed="false">Попуњено <span class="cnt" id="doneCnt">0</span></button>
     </div>
     <div class="status" id="status" aria-live="polite"></div>
   </div>
@@ -167,7 +199,7 @@ textarea.in{min-height:84px;resize:vertical}
 <section id="form" hidden>
   <div class="top"><div class="toprow">
     <button class="back" id="backBtn" type="button">‹ Назад</button>
-    <div class="toptitle"></div>
+    <div class="toptitle" id="formTitle"></div>
   </div></div>
   <div class="fbody">
     <div class="person" id="person"></div>
@@ -236,8 +268,13 @@ const CFG = {
   domain: "teren.local",
   poll: 30000
 };
-const K = { session: "teren_session", profile: "teren_profile", tasks: "teren_tasks",
+const K = { session: "teren_session", profile: "teren_profile", tasks: "teren_tasks", done: "teren_done",
             queue: "teren_queue", user: "teren_last_user", sort: "teren_sort" };
+
+const ISHOD = { anketiran: "Анкетиран", nije_kod_kuce: "4 – Није код куће", odbio: "3 – Одбио" };
+const STATUS = { "0": "0 – Члан", "1": "1 – Сигуран глас", "2": "2 – Неопредељен",
+                 "3": "3 – Против", "4": "4 – Није кући", "99": "99 – Нема" };
+const SORTS = { prezime: "Презиме", adresa: "Адреса", stan: "Број стана" };
 
 /* ============================ ПОМОЋНО ============================ */
 const $ = s => document.querySelector(s);
@@ -273,18 +310,42 @@ function plural(n, one, few, many) {
   if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
   return many;
 }
+function fmtTime(s) {
+  if (!s) return "";
+  const d = new Date(s);
+  if (isNaN(d)) return "";
+  return d.toLocaleString("sr-Cyrl-RS", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+}
+
+/* Телефон: кључ колоне или број који личи на телефон -> линк за позив */
+const PHONE_KEY = /(tel|mob|phone|fon|kontakt|телеф|моб|контакт)/i;
+function phoneHref(key, val) {
+  const raw = String(val == null ? "" : val).trim();
+  if (!raw) return null;
+  let d = raw.replace(/[^\d+]/g, "");
+  d = d.charAt(0) + d.slice(1).replace(/\+/g, "");
+  const digits = d.replace(/\D/g, "");
+  if (digits.length < 6 || digits.length > 15) return null;
+  if (PHONE_KEY.test(key)) return d;
+  if ((d.startsWith("+") || /^0[1-9]/.test(d)) && digits.length >= 8 && digits.length <= 12) return d;
+  return null;
+}
 
 let session = load(K.session);
 let profile = load(K.profile);
 let tasks = load(K.tasks) || [];
-let queue = load(K.queue) || [];
-let sortBy = load(K.sort) || "adresa";
+let done = load(K.done) || [];
+let queue = (load(K.queue) || []).map(q => Object.assign({ kind: "insert" }, q));
+let sortBy = SORTS[load(K.sort)] ? load(K.sort) : "adresa";
+let view = "open";                       // "open" = адресе, "done" = попуњено
 let current = null;
+let editMode = false;
 let form = {};
 let online = navigator.onLine;
 let syncing = false;
 let lastSync = null;
 let pollTimer = null;
+let doneErr = "";
 
 function toast(msg, ms) {
   const t = $("#toast");
@@ -306,8 +367,9 @@ const SR = [
   ["user_banned", "Овај налог је онемогућен."],
   ["user is banned", "Овај налог је онемогућен."],
   ["email not confirmed", "Налог није активиран. Јави се администратору."],
-  ["does not exist", "База није ажурирана – администратор треба да покрене teren_baza_3.sql."],
-  ["violates check constraint", "База није ажурирана – администратор треба да покрене teren_baza_3.sql."]
+  ["does not exist", "База није ажурирана – администратор треба да покрене најновији SQL (teren_baza_4.sql)."],
+  ["could not find", "База није ажурирана – администратор треба да покрене најновији SQL (teren_baza_4.sql)."],
+  ["violates check constraint", "База није ажурирана – администратор треба да покрене најновији SQL."]
 ];
 function srMsg(m) {
   const low = (m || "").toLowerCase();
@@ -404,39 +466,69 @@ async function loadProfile() {
 }
 
 function logout(msg) {
-  session = null; profile = null; tasks = []; queue = [];
-  [K.session, K.profile, K.tasks, K.queue].forEach(k => save(k, null));
+  session = null; profile = null; tasks = []; done = []; queue = [];
+  [K.session, K.profile, K.tasks, K.done, K.queue].forEach(k => save(k, null));
   stopPolling();
   closeForm(true);
+  view = "open";
   showLogin(msg || "");
 }
 
 /* ============================ ПОДАЦИ ============================ */
+const TASK_COLS = "id,ime,prezime,adresa,mesto,sprat,stan,extra";
+
 async function loadTasks() {
   const rows = await http("GET", "/rest/v1/tasks", {
-    params: { select: "id,ime,prezime,adresa,mesto,sprat,stan,extra,assigned_at", status: "eq.dodeljeno",
-              limit: "5000" } });
+    params: { select: TASK_COLS + ",assigned_at", status: "eq.dodeljeno", limit: "5000" } });
   tasks = rows || [];
   save(K.tasks, tasks);
+}
+
+async function loadDone() {
+  try {
+    const rows = await http("GET", "/rest/v1/tasks", {
+      params: { select: TASK_COLS + ",completed_at,surveys(id,ishod,pristanak,podrzava,izlazi,molba,napomena,created_at,updated_at)",
+                status: "eq.zavrseno", order: "completed_at.desc.nullslast", limit: "1000" } });
+    done = (rows || []).map(t => {
+      const s = Array.isArray(t.surveys) ? (t.surveys[0] || null) : (t.surveys || null);
+      const o = Object.assign({}, t, { survey: s });
+      delete o.surveys;
+      return o;
+    });
+    doneErr = "";
+    save(K.done, done);
+  } catch (e) {
+    if (e instanceof NetError || e.status === 401) throw e;
+    doneErr = e.message;                   // нпр. база још није ажурирана – адресе и даље раде
+  }
 }
 
 async function flushQueue() {
   if (!queue.length) return;
   for (const item of queue.slice()) {
     try {
-      await http("POST", "/rest/v1/surveys", { body: item.payload, prefer: "return=minimal" });
+      if (item.kind === "update") {
+        const r = await http("PATCH", "/rest/v1/surveys", { params: { id: "eq." + item.sid },
+                                                           body: item.payload, prefer: "return=representation" });
+        if (!r || !r.length) throw new ApiError(403, "42501", "нема приступа");
+      } else {
+        await http("POST", "/rest/v1/surveys", { body: item.payload, prefer: "return=minimal" });
+      }
       dropFromQueue(item.qid);
     } catch (e) {
       if (e instanceof NetError) throw e;
       if (e.status === 401) throw e;
-      if (e.status === 409 || e.code === "23505") {
-        dropFromQueue(item.qid);
+      dropFromQueue(item.qid);
+      if (item.kind === "update") {
+        if (e.status === 403 || e.code === "42501")
+          toast("„" + item.label + "” више није додељена твом тиму – измена није сачувана.", 4500);
+        else
+          toast("Измена за „" + item.label + "” одбијена: " + e.message, 4500);
+      } else if (e.status === 409 || e.code === "23505") {
         toast("„" + item.label + "” је већ завршио неко други из тима.", 3500);
       } else if (e.status === 403 || e.code === "42501") {
-        dropFromQueue(item.qid);
         toast("„" + item.label + "” више није додељена твом тиму – анкета није послата.", 4000);
       } else {
-        dropFromQueue(item.qid);
         toast("Анкета за „" + item.label + "” одбијена: " + e.message, 4500);
       }
     }
@@ -446,7 +538,7 @@ function dropFromQueue(qid) {
   const item = queue.find(q => q.qid === qid);
   queue = queue.filter(q => q.qid !== qid);
   save(K.queue, queue);
-  if (item) {                        // адреса је обрађена – склони је са листе одмах
+  if (item && item.kind !== "update") {   // адреса је обрађена – склони је са листе одмах
     tasks = tasks.filter(t => t.id !== item.payload.task_id);
     save(K.tasks, tasks);
   }
@@ -460,13 +552,14 @@ async function sync(manual) {
     await flushQueue();
     await loadProfile();
     await loadTasks();
+    await loadDone();
     online = true;
     lastSync = new Date();
     if (manual) toast("Освежено");
   } catch (e) {
     if (e instanceof NetError) {
       online = false;
-      if (manual) toast("Нема интернета – приказујем сачуване адресе.");
+      if (manual) toast("Нема интернета – приказујем сачуване податке.");
     } else if (e.status === 401 || e.code === "inactive" || e.code === "no_profile") {
       syncing = false;
       $("#refreshBtn").classList.remove("spin");
@@ -507,6 +600,17 @@ function addrLine(t) {                     // „Улица 10, спрат 4, с
   if (stan(t)) parts.push("стан " + cyr(stan(t)));
   return parts.join(", ");
 }
+function surveyLabel(s) {
+  if (!s) return "—";
+  if (s.ishod === "anketiran") return STATUS[s.podrzava] || "Анкетиран";
+  return ISHOD[s.ishod] || s.ishod;
+}
+function badgeClass(s) {
+  if (!s) return "gray";
+  if (s.ishod === "nije_kod_kuce" || (s.ishod === "anketiran" && s.podrzava === "4")) return "warn";
+  if (s.ishod === "odbio") return "gray";
+  return "";
+}
 
 /* ============================ ПРИКАЗ ============================ */
 function show(id) {
@@ -535,30 +639,72 @@ function sortTasks(list) {
   });
 }
 
-function visibleTasks() {
-  const pending = new Set(queue.map(q => q.payload.task_id));
+function matches(t) {
   const q = cyr($("#search").value.trim()).toLowerCase();
-  const list = tasks.filter(t => !pending.has(t.id)).filter(t => {
-    if (!q) return true;
-    return cyr([t.ime, t.prezime, t.adresa, t.mesto, sprat(t), stan(t)].join(" ")).toLowerCase().includes(q);
-  });
-  return sortTasks(list);
+  if (!q) return true;
+  const extra = Object.values(extraOf(t)).join(" ");
+  return cyr([t.ime, t.prezime, t.adresa, t.mesto, sprat(t), stan(t), extra].join(" ")).toLowerCase().includes(q);
 }
 
-function renderSort() {
-  document.querySelectorAll("#sortSeg button").forEach(b => b.classList.toggle("on", b.dataset.sort === sortBy));
+function pendingInsertIds() {
+  return new Set(queue.filter(q => q.kind !== "update").map(q => q.payload.task_id));
+}
+
+function openList() {
+  const p = pendingInsertIds();
+  return tasks.filter(t => !p.has(t.id));
+}
+
+function doneList() {
+  const pend = queue.filter(q => q.kind !== "update").map(q => {
+    const t = tasks.find(x => x.id === q.payload.task_id);
+    return t ? Object.assign({}, t, { survey: q.payload, pending: true, completed_at: new Date(q.at).toISOString() }) : null;
+  }).filter(Boolean);
+  const ids = new Set(pend.map(x => x.id));
+  return pend.concat(done.filter(d => !ids.has(d.id)));
+}
+
+function cardHtml(t, isDone) {
+  let badge = "", meta = cyr(t.mesto || "");
+  if (isDone) {
+    const s = t.survey;
+    const pendEdit = !t.pending && s && s.id && queue.some(q => q.kind === "update" && q.sid === s.id);
+    const when = fmtTime((s && s.updated_at) || t.completed_at);
+    if (when) meta = meta ? meta + " · " + when : when;
+    badge = `<div><span class="badge ${t.pending ? "gray" : badgeClass(s)}">${t.pending ? "⏳ Чека слање · " : ""}${esc(surveyLabel(s))}${pendEdit ? " · ⏳" : ""}</span></div>`;
+  }
+  return `
+    <div class="card" data-id="${esc(t.id)}" data-pending="${t.pending ? 1 : ""}" role="button" tabindex="0">
+      <div class="t">
+        <div class="n">${esc(fullName(t))}</div>
+        <div class="a">${esc(addrLine(t))}</div>
+        ${meta ? `<div class="m">${esc(meta)}</div>` : ""}
+        ${badge}
+      </div>
+      <div class="chev">›</div>
+    </div>`;
 }
 
 function renderMain() {
   if (!profile) return;
   $("#teamName").textContent = cyr(profile.team_name) || "Без тима";
   $("#userName").textContent = cyr(profile.full_name || profile.username);
-  renderSort();
+  $("#sortLbl").textContent = SORTS[sortBy];
+  document.querySelectorAll("#sortMenu button").forEach(b => {
+    const on = b.dataset.sort === sortBy;
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-checked", String(on));
+  });
 
-  const list = visibleTasks();
-  const total = tasks.filter(t => !queue.some(q => q.payload.task_id === t.id)).length;
+  const openAll = openList();
+  const doneAll = doneList();
+  $("#doneCnt").textContent = doneAll.length;
+  $("#doneBtn").classList.toggle("on", view === "done");
+  $("#doneBtn").setAttribute("aria-pressed", String(view === "done"));
+
   const st = [];
-  st.push(`<span class="pill">${total} ${plural(total, "адреса", "адресе", "адреса")}</span>`);
+  if (view === "done") st.push(`<span class="pill">${doneAll.length} ${plural(doneAll.length, "попуњена", "попуњене", "попуњених")}</span>`);
+  else st.push(`<span class="pill">${openAll.length} ${plural(openAll.length, "адреса", "адресе", "адреса")}</span>`);
   st.push(online ? `<span class="pill ok">● На мрежи</span>` : `<span class="pill bad">● Без интернета</span>`);
   if (queue.length) st.push(`<span class="pill warn">⏳ Чека слање: ${queue.length}</span>`);
   if (lastSync) st.push(`<span class="pill">${lastSync.toLocaleTimeString("sr-Cyrl-RS", { hour: "2-digit", minute: "2-digit" })}</span>`);
@@ -569,43 +715,82 @@ function renderMain() {
     box.innerHTML = `<div class="empty"><div class="big">👥</div>Ниси распоређен ни у један тим.<br>Јави се администратору.</div>`;
     return;
   }
+  const searching = !!$("#search").value.trim();
+
+  if (view === "done") {
+    const list = sortTasks(doneAll.filter(matches));
+    if (doneErr && !doneAll.length) {
+      box.innerHTML = `<div class="empty"><div class="big">⚠️</div>${esc(doneErr)}</div>`;
+      return;
+    }
+    if (!list.length) {
+      box.innerHTML = searching
+        ? `<div class="empty"><div class="big">🔍</div>Нема резултата претраге.</div>`
+        : `<div class="empty"><div class="big">📋</div>Још нема попуњених адреса.</div>`;
+      return;
+    }
+    box.innerHTML = `<div class="lhint">Додирни адресу да промениш статус.</div>` + list.map(t => cardHtml(t, true)).join("");
+    return;
+  }
+
+  const list = sortTasks(openAll.filter(matches));
   if (!list.length) {
-    box.innerHTML = $("#search").value.trim()
+    box.innerHTML = searching
       ? `<div class="empty"><div class="big">🔍</div>Нема резултата претраге.</div>`
       : `<div class="empty"><div class="big">✅</div>Нема додељених адреса.<br>Нове ће се појавити саме.</div>`;
     return;
   }
-  box.innerHTML = list.map(t => `
-    <div class="card" data-id="${esc(t.id)}" role="button" tabindex="0">
-      <div class="t">
-        <div class="n">${esc(fullName(t))}</div>
-        <div class="a">${esc(addrLine(t))}</div>
-        ${t.mesto ? `<div class="m">${esc(cyr(t.mesto))}</div>` : ""}
-      </div>
-      <div class="chev">›</div>
-    </div>`).join("");
+  box.innerHTML = list.map(t => cardHtml(t, false)).join("");
+}
+
+function setSortMenu(open) {
+  const m = $("#sortMenu");
+  const o = open === undefined ? m.hidden : open;
+  m.hidden = !o;
+  $("#sortBtn").setAttribute("aria-expanded", String(o));
 }
 
 /* ============================ АНКЕТА ============================ */
-function openForm(id) {
-  current = tasks.find(t => t.id === id);
+function openForm(id, edit) {
+  current = (edit ? done : tasks).find(t => t.id === id);
   if (!current) return;
-  form = { ishod: null, pristanak: false, podrzava: null, izlazi: null };
-  $("#consent").checked = false;
-  $("#molba").value = "";
-  $("#napomena").value = "";
+  const s = edit ? current.survey : null;
+  if (edit && (!s || !s.id)) { toast("Анкета није доступна – освежи листу."); current = null; return; }
+  editMode = !!edit;
+
+  form = s
+    ? { ishod: s.ishod, pristanak: !!s.pristanak, podrzava: s.podrzava || null, izlazi: s.izlazi || null }
+    : { ishod: null, pristanak: false, podrzava: null, izlazi: null };
+  $("#consent").checked = form.pristanak;
+  $("#molba").value = s ? (s.molba || "") : "";
+  $("#napomena").value = s ? (s.napomena || "") : "";
+  $("#formTitle").textContent = edit ? "Измена анкете" : "";
+  $("#sendBtn").textContent = edit ? "Сачувај измене" : "ОК – пошаљи";
 
   const extra = extraOf(current);
   const extraHtml = Object.keys(extra)
     .filter(k => extra[k] !== "" && extra[k] != null && !EXTRA_SPRAT.test(k.trim()) && !EXTRA_STAN.test(k.trim()))
-    .map(k => `<div><b>${esc(cyr(k))}:</b> ${esc(cyr(extra[k]))}</div>`).join("");
+    .map(k => {
+      const tel = phoneHref(k, extra[k]);
+      const val = tel
+        ? `<a class="tel" href="tel:${esc(tel)}">📞 ${esc(extra[k])}</a>`
+        : esc(cyr(extra[k]));
+      return `<div><b>${esc(cyr(k))}:</b> ${val}</div>`;
+    }).join("");
   const q = encodeURIComponent([current.adresa, current.mesto, "Srbija"].filter(Boolean).join(", "));
+  const curHtml = edit
+    ? `<div class="cur">Тренутно:<span class="badge ${badgeClass(s)}">${esc(surveyLabel(s))}</span>
+         ${fmtTime(s.updated_at || current.completed_at) ? " · " + esc(fmtTime(s.updated_at || current.completed_at)) : ""}</div>`
+    : "";
   $("#person").innerHTML = `
     <div class="n">${esc(fullName(current))}</div>
     <div class="a">${esc(addrLine(current))}</div>
     ${current.mesto ? `<div class="m">${esc(cyr(current.mesto))}</div>` : ""}
     ${extraHtml ? `<div class="extra">${extraHtml}</div>` : ""}
-    <a class="maplink" href="https://www.openstreetmap.org/search?query=${q}" target="_blank" rel="noopener">📍 Отвори на мапи</a>`;
+    ${curHtml}
+    <div class="links">
+      <a class="maplink" href="https://www.openstreetmap.org/search?query=${q}" target="_blank" rel="noopener">📍 Отвори на мапи</a>
+    </div>`;
 
   $("#form").hidden = false;
   $("#form").scrollTop = 0;
@@ -619,6 +804,7 @@ function closeForm(silent) {
   $("#form").hidden = true;
   document.body.style.overflow = "";
   current = null;
+  editMode = false;
   if (!silent && history.state && history.state.form) history.back();
 }
 
@@ -638,8 +824,7 @@ async function submitForm() {
   if (!current) return;
   const anket = form.ishod === "anketiran";
   if (anket && !form.pristanak) { toast("Без пристанка не може – изабери „3 – Одбио”."); return; }
-  const payload = {
-    task_id: current.id,
+  const answers = {
     ishod: form.ishod,
     pristanak: anket,
     podrzava: anket ? form.podrzava : null,
@@ -648,20 +833,31 @@ async function submitForm() {
     napomena: $("#napomena").value.trim()
   };
   const label = fullName(current);
-  queue.push({ qid: uid(), label, payload, at: Date.now() });
+  const wasEdit = editMode;
+
+  if (wasEdit) {
+    const sid = current.survey.id;
+    queue = queue.filter(q => !(q.kind === "update" && q.sid === sid));   // само последња измена
+    queue.push({ qid: uid(), kind: "update", sid, label, payload: answers, at: Date.now() });
+    current.survey = Object.assign({}, current.survey, answers, { updated_at: new Date().toISOString() });
+    save(K.done, done);
+  } else {
+    queue.push({ qid: uid(), kind: "insert", label, payload: Object.assign({ task_id: current.id }, answers), at: Date.now() });
+  }
   save(K.queue, queue);
   closeForm(false);
   renderMain();
   try {
     await flushQueue();
     online = true;
-    toast("✔ Послато");
+    toast(wasEdit ? "✔ Сачувано" : "✔ Послато");
+    loadDone().then(renderMain).catch(() => {});
   } catch (e) {
     if (e instanceof NetError) {
       online = false;
       toast("Сачувано на телефону – послаће се само кад буде интернета.", 3500);
     } else if (e.status === 401) {
-      toast("Сесија је истекла – анкета чека; пријави се поново.", 4000);
+      toast("Сесија је истекла – подаци чекају; пријави се поново.", 4000);
     }
   }
   renderMain();
@@ -676,8 +872,9 @@ $("#loginForm").addEventListener("submit", async ev => {
   btn.disabled = true; btn.textContent = "Пријављивање…";
   try {
     await login($("#lu").value, $("#lp").value);
-    queue = load(K.queue) || [];
-    tasks = [];
+    queue = (load(K.queue) || []).map(q => Object.assign({ kind: "insert" }, q));
+    tasks = []; done = [];
+    view = "open";
     show("#main");
     renderMain();
     await sync(false);
@@ -690,26 +887,48 @@ $("#loginForm").addEventListener("submit", async ev => {
   }
 });
 
+function onCard(c) {
+  if (view === "done") {
+    if (c.dataset.pending) { toast("Анкета још чека слање – измену уради кад се пошаље."); return; }
+    openForm(c.dataset.id, true);
+  } else {
+    openForm(c.dataset.id, false);
+  }
+}
 $("#list").addEventListener("click", ev => {
   const c = ev.target.closest(".card");
-  if (c) openForm(c.dataset.id);
+  if (c) onCard(c);
 });
 $("#list").addEventListener("keydown", ev => {
   const c = ev.target.closest(".card");
-  if (c && (ev.key === "Enter" || ev.key === " ")) { ev.preventDefault(); openForm(c.dataset.id); }
+  if (c && (ev.key === "Enter" || ev.key === " ")) { ev.preventDefault(); onCard(c); }
 });
 $("#search").addEventListener("input", renderMain);
-$("#sortSeg").addEventListener("click", ev => {
-  const b = ev.target.closest("button");
+
+$("#sortBtn").addEventListener("click", ev => { ev.stopPropagation(); setSortMenu(); });
+$("#sortMenu").addEventListener("click", ev => {
+  const b = ev.target.closest("button[data-sort]");
   if (!b) return;
   sortBy = b.dataset.sort;
   save(K.sort, sortBy);
+  setSortMenu(false);
   renderMain();
 });
+document.addEventListener("click", ev => { if (!ev.target.closest("#sortDD")) setSortMenu(false); });
+document.addEventListener("keydown", ev => { if (ev.key === "Escape") setSortMenu(false); });
+
+$("#doneBtn").addEventListener("click", () => {
+  view = view === "done" ? "open" : "done";
+  setSortMenu(false);
+  window.scrollTo(0, 0);
+  renderMain();
+  if (view === "done") sync(false);
+});
+
 $("#refreshBtn").addEventListener("click", () => sync(true));
 $("#logoutBtn").addEventListener("click", () => {
   const msg = queue.length
-    ? `Имаш ${queue.length} непослатих анкета. Ако се одјавиш, БИЋЕ ИЗГУБЉЕНЕ. Одјавити се?`
+    ? `Имаш ${queue.length} непослатих анкета/измена. Ако се одјавиш, БИЋЕ ИЗГУБЉЕНЕ. Одјавити се?`
     : "Одјавити се?";
   if (confirm(msg)) logout("");
 });
